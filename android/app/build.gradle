@@ -1,0 +1,54 @@
+plugins {
+    id "com.android.application"
+    id "kotlin-android"
+    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
+    id "dev.flutter.flutter-gradle-plugin"
+    id 'com.google.gms.google-services'
+}
+
+def flutterVersionCode = project.hasProperty('flutterVersionCode') ? project.flutterVersionCode : "1"
+def flutterVersionName = project.hasProperty('flutterVersionName') ? project.flutterVersionName : "1.0"
+
+android {
+    namespace = "com.example.myproject"
+    compileSdkVersion 34  // แก้ไขเป็น SDK 34 ตามคำแนะนำ
+
+    ndkVersion = flutter.ndkVersion  // ค่านี้มาจาก Flutter
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8
+    }
+
+    signingConfigs {
+        release {
+            storeFile file("path/to/your/keystore.jks")  // เปลี่ยน path ให้ตรงกับไฟล์ keystore ของคุณ
+            storePassword "your-store-password"          // รหัสผ่าน keystore ของคุณ
+            keyAlias "your-key-alias"                    // ชื่อ alias ของ key
+            keyPassword "your-key-password"              // รหัสผ่าน key ของคุณ
+        }
+    }
+
+    defaultConfig {
+        applicationId  "com.example.myproject"
+        minSdkVersion 23  // แก้ไขเป็น 23 หรือสูงกว่า ตามที่จำเป็น
+        targetSdkVersion 34  // ตั้งค่า targetSdkVersion เป็น 34
+
+        versionCode = Integer.parseInt(flutterVersionCode)
+        versionName = flutterVersionName
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release  // ระบุการเซ็นชื่อสำหรับ release build
+        }
+    }
+}
+
+flutter {
+    source = "../.."
+}
