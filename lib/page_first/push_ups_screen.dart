@@ -5,16 +5,19 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:myproject/page_first/activity_level_screen.dart';
 
 class PushUpsScreen extends StatefulWidget {
+  final String userId;
   final String gender;
   final String goal;
   final String focusAreas;
   final String inspiration;
+
   const PushUpsScreen(
       {super.key,
       required this.gender,
       required this.goal,
       required this.focusAreas,
-      required this.inspiration});
+      required this.inspiration,
+      required this.userId});
 
   @override
   State<PushUpsScreen> createState() => _PushUpsScreenState();
@@ -78,6 +81,7 @@ class _PushUpsScreenState extends State<PushUpsScreen> {
         context,
         MaterialPageRoute(
           builder: (context) => ActivityLevelScreen(
+            userId: widget.userId,
             gender: widget.gender,
             goal: widget.goal,
             focusAreas: widget.focusAreas,

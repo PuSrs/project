@@ -15,12 +15,14 @@ class FormContainerWidget extends StatefulWidget {
 
   final FormFieldSetter<String>? onSaved; // ฟังก์ชันที่ถูกเรียกเมื่อบันทึกค่า
 
-  final FormFieldValidator<String>? validator; // ฟังก์ชันที่ใช้ตรวจสอบความถูกต้อง
+  final FormFieldValidator<String>?
+      validator; // ฟังก์ชันที่ใช้ตรวจสอบความถูกต้อง
 
-  final ValueChanged<String>? onFieldSubmitted; // ฟังก์ชันที่เรียกเมื่อผู้ใช้กดยืนยัน
+  final ValueChanged<String>?
+      onFieldSubmitted; // ฟังก์ชันที่เรียกเมื่อผู้ใช้กดยืนยัน
 
   final TextInputType? inputType; // ประเภทของคีย์บอร์ดที่ต้องการ
-  
+
   final Color textColor; // สีของข้อความในช่องกรอก
 
   const FormContainerWidget({
@@ -34,7 +36,7 @@ class FormContainerWidget extends StatefulWidget {
     this.onSaved,
     this.validator,
     this.onFieldSubmitted,
-    this.inputType, 
+    this.inputType,
     required this.textColor, // ต้องระบุสีตัวอักษร
   });
 
@@ -43,7 +45,8 @@ class FormContainerWidget extends StatefulWidget {
 }
 
 class _FormContainerWidgetState extends State<FormContainerWidget> {
-  bool obscureText = true; // ตัวแปรที่ใช้ในการปิด/เปิดการแสดงข้อความในฟิลด์รหัสผ่าน
+  bool obscureText =
+      true; // ตัวแปรที่ใช้ในการปิด/เปิดการแสดงข้อความในฟิลด์รหัสผ่าน
 
   @override
   Widget build(BuildContext context) {
@@ -62,34 +65,44 @@ class _FormContainerWidgetState extends State<FormContainerWidget> {
 
         key: widget.fieldKey, // กำหนดคีย์สำหรับฟิลด์
 
-        obscureText: (widget.isPasswordField ?? false) ? obscureText : false, // ถ้าฟิลด์คือรหัสผ่านให้ซ่อนข้อความ
+        obscureText: (widget.isPasswordField ?? false)
+            ? obscureText
+            : false, // ถ้าฟิลด์คือรหัสผ่านให้ซ่อนข้อความ
 
         onSaved: widget.onSaved, // เมื่อบันทึกข้อมูลจะเรียกฟังก์ชันนี้
 
         validator: widget.validator, // ใช้ในการตรวจสอบความถูกต้องของข้อมูล
 
-        onFieldSubmitted: widget.onFieldSubmitted, // เมื่อผู้ใช้กดยืนยันจะเรียกฟังก์ชันนี้
+        onFieldSubmitted:
+            widget.onFieldSubmitted, // เมื่อผู้ใช้กดยืนยันจะเรียกฟังก์ชันนี้
 
         decoration: InputDecoration(
           border: InputBorder.none, // ไม่มีขอบ
 
-          filled: false, // ปิดการใช้งาน filled เพื่อให้ Container จัดการสีพื้นเอง
+          filled:
+              false, // ปิดการใช้งาน filled เพื่อให้ Container จัดการสีพื้นเอง
 
           hintText: widget.hintText, // ข้อความแนะนำในช่องกรอก
 
-          hintStyle: const TextStyle(color: Colors.black45), // กำหนดสีของ hintText
+          hintStyle:
+              const TextStyle(color: Colors.black45), // กำหนดสีของ hintText
 
           suffixIcon: (widget.isPasswordField ?? false) // ถ้าเป็นฟิลด์รหัสผ่าน
-          
+
               ? GestureDetector(
                   onTap: () {
                     setState(() {
-                      obscureText = !obscureText; // เปลี่ยนสถานะการแสดง/ซ่อนข้อความ
+                      obscureText =
+                          !obscureText; // เปลี่ยนสถานะการแสดง/ซ่อนข้อความ
                     });
                   },
                   child: Icon(
-                    obscureText ? Icons.visibility_off : Icons.visibility, // เปลี่ยนไอคอนแสดง/ซ่อนรหัสผ่าน
-                    color: obscureText ? Colors.grey : Colors.blue, // เปลี่ยนสีไอคอน
+                    obscureText
+                        ? Icons.visibility_off
+                        : Icons.visibility, // เปลี่ยนไอคอนแสดง/ซ่อนรหัสผ่าน
+                    color: obscureText
+                        ? Colors.grey
+                        : Colors.blue, // เปลี่ยนสีไอคอน
                   ),
                 )
               : null, // ถ้าไม่ใช่ฟิลด์รหัสผ่าน ให้เป็น null

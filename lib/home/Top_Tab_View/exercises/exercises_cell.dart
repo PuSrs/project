@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class ExercisesCell extends StatelessWidget {
   final Map obj;
   final VoidCallback onPressed;
+  
 
   const ExercisesCell({super.key, required this.obj, required this.onPressed});
 

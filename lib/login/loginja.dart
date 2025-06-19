@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:myproject/common_widget/toast.dart';
+import 'package:myproject/home/PageScreen/fitness_plan_screen_page.dart';
 import 'package:myproject/login/signupja.dart';
 import 'package:myproject/widget/firebase_auth_sevices.dart';
 import 'package:myproject/widget/form_container_widget.dart';
@@ -13,7 +14,7 @@ class Loginja extends StatefulWidget {
 }
 
 class _LoginjaState extends State<Loginja> {
-  bool _isSigning = false; // แสดงสถานะการโหลด
+  bool _isSigning = false; // สถานะโหลดขณะล็อกอิน
 
   final FirebaseAuthSevices _auth = FirebaseAuthSevices();
 
@@ -100,40 +101,6 @@ class _LoginjaState extends State<Loginja> {
                   ),
                 ),
                 SizedBox(height: 15),
-
-                // // ปุ่ม Sign in with Google
-                // GestureDetector(
-                //   onTap: () {},
-                //   child: Container(
-                //     width: double.infinity,
-                //     height: 50,
-                //     decoration: BoxDecoration(
-                //       color: Colors.red,
-                //       borderRadius: BorderRadius.circular(12),
-                //       boxShadow: [
-                //         BoxShadow(
-                //             color: Colors.black26,
-                //             blurRadius: 4,
-                //             offset: Offset(2, 2))
-                //       ],
-                //     ),
-                //     child: Center(
-                //       child: Row(
-                //         mainAxisAlignment: MainAxisAlignment.center,
-                //         children: [
-                //           Icon( FontAwesomeIcons.google ),
-                //           Text(" Sign in with Google ",
-                //               style: TextStyle(
-                //                   color: Colors.white,
-                //                   fontWeight: FontWeight.bold,
-                //                   fontSize: 18)),
-                //         ],
-                //       ),
-                //     ),
-                //   ),
-                // ),
-
-                SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -146,7 +113,7 @@ class _LoginjaState extends State<Loginja> {
                             MaterialPageRoute(
                                 builder: (context) => Signupja()));
                       },
-                      child: Text(" Sign Up",
+                      child: Text(" Register",
                           style: TextStyle(
                               color: Colors.yellow,
                               fontWeight: FontWeight.bold)),
@@ -164,21 +131,39 @@ class _LoginjaState extends State<Loginja> {
   // ฟังก์ชันล็อกอินด้วยอีเมลและรหัสผ่าน
   void _signIn() async {
     setState(() {
-      _isSigning = true;
+      _isSigning = true; // แสดง loading indicator
     });
 
-    String email = _emailController.text;
-    String password = _passwordController.text;
+    String email = _emailController.text.trim();
+    String password = _passwordController.text.trim();
 
+    // เรียกใช้งานเมธอดล็อกอินของ FirebaseAuthSevices
     User? user = await _auth.signinWithEmailAndPassword(email, password);
 
     setState(() {
-      _isSigning = false;
+      _isSigning = false; // ซ่อน loading indicator
     });
 
     if (user != null) {
       showtoast(message: "User is successfully signed in");
-      Navigator.pushNamed(context, "/welcomePage");
+
+      // ดึงชื่อผู้ใช้ (displayName) จาก user object
+      String username = user.displayName ?? 'No Name';
+
+      // สร้างตัวแปรเก็บข้อมูลที่ต้องการส่งไปหน้า FitnessPlanScreenPage
+      var userData = {
+        'uid': user.uid,
+        'email': user.email,
+        'username': username, // เพิ่มชื่อผู้ใช้เข้าไปในข้อมูล
+      };
+
+      // ส่งข้อมูล userData ไปหน้า FitnessPlanScreenPage
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => FitnessPlanScreenPage(userData: userData),
+        ),
+      );
     } else {
       showtoast(message: "Some error occurred");
     }

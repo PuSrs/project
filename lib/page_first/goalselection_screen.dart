@@ -4,9 +4,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:myproject/page_first/focus_area_selection_screen.dart';
 
 class GoalSelectionScreen extends StatefulWidget {
+  final String userId;
   final String gender;
 
-  const GoalSelectionScreen({super.key, required this.gender});
+  const GoalSelectionScreen(
+      {super.key, required this.gender, required this.userId});
 
   @override
   State<GoalSelectionScreen> createState() => _GoalSelectionScreenState();
@@ -23,7 +25,7 @@ class _GoalSelectionScreenState extends State<GoalSelectionScreen> {
   ];
 
   // ✅ บันทึกข้อมูลลง Firestore
-  Future<void> saveGoalAndGenderToFirestore() async {
+  Future<bool> saveGoalAndGenderToFirestore() async {
     User? user = FirebaseAuth.instance.currentUser; // ดึงข้อมูลผู้ใช้ที่ล็อกอิน
     if (user != null && selectedGoal != null) {
       try {
@@ -32,6 +34,7 @@ class _GoalSelectionScreenState extends State<GoalSelectionScreen> {
           'goal': selectedGoal, // บันทึกเป้าหมายที่เลือก
           'timestamp': FieldValue.serverTimestamp(),
         }, SetOptions(merge: true)); // ใช้ merge:true เพื่อไม่ลบข้อมูลเก่า
+        return true; // สำเร็จ
       } catch (e) {
         print('Error saving data: $e');
         if (mounted) {
@@ -39,8 +42,10 @@ class _GoalSelectionScreenState extends State<GoalSelectionScreen> {
             const SnackBar(content: Text('เกิดข้อผิดพลาดในการบันทึกข้อมูล')),
           );
         }
+        return false; // ไม่สำเร็จ
       }
     }
+    return false; // ไม่สำเร็จ (อาจจะไม่มีผู้ใช้หรือเป้าหมายไม่ได้เลือก)
   }
 
   @override
@@ -52,7 +57,7 @@ class _GoalSelectionScreenState extends State<GoalSelectionScreen> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.pushNamed(context, "/genderPage");
+            Navigator.pop(context);
           },
         ),
       ),
@@ -138,48 +143,68 @@ class _GoalSelectionScreenState extends State<GoalSelectionScreen> {
               const SizedBox(height: 20),
 
               // ✅ ปุ่ม "ถัดไป"
-              ElevatedButton(
-                onPressed: isLoading
-                    ? null // ปิดปุ่มหากกำลังโหลด
-                    : () async {
-                        if (selectedGoal == null) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('กรุณาเลือกเป้าหมายออกกำลังกาย'),
-                              duration: Duration(seconds: 2),
-                            ),
-                          );
-                          return;
-                        }
-
-                        setState(() => isLoading = true); // เริ่มโหลด
-
-                        await saveGoalAndGenderToFirestore();
-
-                        if (mounted) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => FocusAreaSelectionScreen(
-                                gender: widget.gender,
-                                goal: selectedGoal!,
+              SizedBox(
+                // Wrap with SizedBox to control button size
+                width: double.infinity, // Make the button fill the width
+                child: ElevatedButton(
+                  onPressed: isLoading
+                      ? null // ปิดปุ่มหากกำลังโหลด
+                      : () async {
+                          if (selectedGoal == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('กรุณาเลือกเป้าหมายออกกำลังกาย'),
+                                duration: Duration(seconds: 2),
                               ),
-                            ),
-                          );
-                        }
+                            );
+                            return;
+                          }
 
-                        setState(() => isLoading = false); // หยุดโหลด
-                      },
-                child: isLoading
-                    ? const CircularProgressIndicator(color: Colors.white)
-                    : const Text(
-                        'ถัดไป',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
+                          setState(() => isLoading = true); // เริ่มโหลด
+
+                          // Await the result of saving to Firestore
+                          bool success = await saveGoalAndGenderToFirestore();
+
+                          if (mounted) {
+                            // Check if the widget is still in the tree
+                            setState(() => isLoading =
+                                false); // หยุดโหลดเสมอ ไม่ว่าจะสำเร็จหรือไม่ก็ตาม
+
+                            if (success) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      FocusAreaSelectionScreen(
+                                    userId: widget.userId,
+                                    gender: widget.gender,
+                                    goal: selectedGoal!,
+                                  ),
+                                ),
+                              );
+                            }
+                          }
+                        },
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                    backgroundColor:
+                        Colors.blueAccent, // Set button background color
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(
+                          10), // Rounded corners for the button
+                    ),
+                  ),
+                  child: isLoading
+                      ? const CircularProgressIndicator(color: Colors.white)
+                      : const Text(
+                          'ถัดไป',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
+                ),
               ),
               const SizedBox(height: 24),
             ],

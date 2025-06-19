@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:myproject/page_first/push_ups_screen.dart';
 
 class InspirationScreen extends StatefulWidget {
+  final String userId;
   final String gender;
   final String goal;
   final String focusAreas;
@@ -14,6 +15,7 @@ class InspirationScreen extends StatefulWidget {
     required this.gender,
     required this.goal,
     required this.focusAreas,
+    required this.userId,
   }) : super(key: key);
 
   @override
@@ -57,6 +59,7 @@ class _InspirationScreenState extends State<InspirationScreen> {
         'goal': widget.goal,
         'focusAreas': widget.focusAreas,
         'inspiration': selectedText,
+        'pushUpCount': 0, 
         'timestamp': FieldValue.serverTimestamp(),
       }, SetOptions(merge: true));
 
@@ -65,6 +68,7 @@ class _InspirationScreenState extends State<InspirationScreen> {
           context,
           MaterialPageRoute(
               builder: (context) => PushUpsScreen(
+                    userId: widget.userId,
                     gender: widget.gender,
                     goal: widget.goal,
                     focusAreas: widget.focusAreas,

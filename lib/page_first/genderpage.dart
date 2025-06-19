@@ -4,7 +4,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:myproject/page_first/goalselection_screen.dart';
 
 class GenderPage extends StatefulWidget {
-  const GenderPage({super.key});
+  final String? userId;
+  final String year;
+
+  const GenderPage({
+    super.key,
+    required this.userId,
+    required this.year,
+  });
 
   @override
   State<GenderPage> createState() => _GenderPageState();
@@ -52,6 +59,18 @@ class _GenderPageState extends State<GenderPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // เพิ่ม AppBar พร้อมปุ่ม Back
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
+      extendBodyBehindAppBar: true, // ให้เนื้อหาฉากหลังเต็มหน้าจอ
       body: Container(
         width: double.infinity,
         height: double.infinity,
@@ -113,15 +132,28 @@ class _GenderPageState extends State<GenderPage> {
                       return;
                     }
 
-                    await _saveGenderToFirestore(); // บันทึกข้อมูลก่อนเปลี่ยนหน้า
+                    await _saveGenderToFirestore();
+
+                    User? user = FirebaseAuth.instance.currentUser;
+                    if (user == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('ไม่พบข้อมูลผู้ใช้. กรุณาล็อกอินใหม่'),
+                          duration: Duration(seconds: 2),
+                        ),
+                      );
+                      return;
+                    }
 
                     if (mounted) {
                       Future.delayed(Duration.zero, () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) =>
-                                GoalSelectionScreen(gender: selectedGender!),
+                            builder: (context) => GoalSelectionScreen(
+                              userId: user.uid,
+                              gender: selectedGender!,
+                            ),
                           ),
                         );
                       });
@@ -143,6 +175,7 @@ class _GenderPageState extends State<GenderPage> {
                     ),
                   ),
                 ),
+
                 const SizedBox(height: 24),
               ],
             ),

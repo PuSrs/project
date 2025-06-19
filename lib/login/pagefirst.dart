@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:myproject/page_first/genderpage.dart';
 
 class Pagefirst extends StatelessWidget {
-  const Pagefirst({super.key});
+  final String? userId;
+  const Pagefirst({super.key, this.userId});
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +53,9 @@ class Pagefirst extends StatelessWidget {
                 children: [
                   Icon(Icons.local_drink, size: 40, color: Colors.orangeAccent),
                   SizedBox(height: 10),
-                  Text('Drink', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  Text('Drink',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                   Text('150 ml', style: TextStyle(fontSize: 16)),
                 ],
               ),
@@ -62,7 +66,19 @@ class Pagefirst extends StatelessWidget {
               height: 50,
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, '/genderPage');
+                  // สมมุติว่าคุณมี selectedYear ที่นี่ ถ้ายังไม่มี ต้องกำหนดค่าให้ เช่น ปีปัจจุบัน - 20
+                  int selectedYear = DateTime.now().year - 20;
+
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => GenderPage(
+                        userId: userId ??
+                            '', // กรณี userId เป็น null ให้ส่ง string ว่าง
+                        year: selectedYear.toString(),
+                      ),
+                    ),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.orangeAccent,

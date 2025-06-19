@@ -4,13 +4,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:myproject/page_first/inspiration.dart';
 
 class FocusAreaSelectionScreen extends StatefulWidget {
+  final String userId;
   final String gender;
   final String goal;
 
   const FocusAreaSelectionScreen({
     super.key,
     required this.gender,
-    required this.goal,
+    required this.goal, required this.userId,
   });
 
   @override
@@ -174,6 +175,7 @@ class _FocusAreaSelectionScreenState extends State<FocusAreaSelectionScreen> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) => InspirationScreen(
+                                      userId: widget.userId,
                                       gender: widget.gender,
                                       goal: widget.goal,
                                       focusAreas: selectedAreas!,

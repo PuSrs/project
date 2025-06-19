@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:myproject/page_first/set_weekly_goals.dart';
 
 class ActivityLevelScreen extends StatefulWidget {
+  final String userId;
   final String gender;
   final String goal;
   final String focusAreas;
@@ -16,7 +17,7 @@ class ActivityLevelScreen extends StatefulWidget {
       required this.goal,
       required this.focusAreas,
       required this.inspiration,
-      required this.pushUpCount});
+      required this.pushUpCount, required this.userId});
 
   @override
   _ActivityLevelScreenState createState() => _ActivityLevelScreenState();
@@ -157,6 +158,7 @@ class _ActivityLevelScreenState extends State<ActivityLevelScreen> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => SetWeeklyGoals(
+                        userId: widget.userId,
                         gender: widget.gender,
                         goal: widget.goal,
                         focusAreas: widget.focusAreas,

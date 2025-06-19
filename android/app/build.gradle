@@ -11,7 +11,7 @@ def flutterVersionName = project.hasProperty('flutterVersionName') ? project.flu
 
 android {
     namespace = "com.example.myproject"
-    compileSdkVersion 34  // แก้ไขเป็น SDK 34 ตามคำแนะนำ
+    compileSdkVersion 35  // แก้ไขเป็น SDK 35 ตามคำแนะนำ
 
     ndkVersion = flutter.ndkVersion  // ค่านี้มาจาก Flutter
 
