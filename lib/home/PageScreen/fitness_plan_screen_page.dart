@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:myproject/home/PageScreen/day_details_page.dart';
-import 'package:myproject/home/PageScreen/fitness_search_screen.dart';
-import 'package:myproject/login/fillprofile.dart';
-import 'package:myproject/login/levelpage.dart';
+import 'package:intl/intl.dart'; // สำหรับจัดรูปแบบวันที่
+import 'package:myproject/home/PageScreen/day_details_page.dart'; // หน้ารายละเอียดของวัน
+import 'package:myproject/home/PageScreen/fitness_search_screen.dart'; // หน้าค้นหา
+import 'package:myproject/home/PageScreen/loadingscreen.dart';
+import 'package:myproject/login/fillprofile.dart'; // หน้าแก้ไขโปรไฟล์
+import 'package:myproject/login/levelpage.dart'; // หน้ารายงานผล
 
+// StatefulWidget สำหรับหน้าหลักของแผนการออกกำลังกาย
 class FitnessPlanScreenPage extends StatefulWidget {
-  final Map<String, dynamic> userData;
+  final Map<String, dynamic> userData; // รับข้อมูลผู้ใช้ที่ล็อกอินเข้ามา
 
   const FitnessPlanScreenPage({super.key, required this.userData});
 
@@ -15,17 +17,17 @@ class FitnessPlanScreenPage extends StatefulWidget {
 }
 
 class _FitnessPlanScreenPageState extends State<FitnessPlanScreenPage> {
-  int _selectedIndex = 0;
+  int _selectedIndex = 0; // เก็บตำแหน่งเมนูที่เลือกใน BottomNavigationBar
 
-  // ฟังก์ชันที่ใช้ในการเปลี่ยนหน้าหลังจากคลิกที่ BottomNavigationBar
+  // ฟังก์ชันเมื่อผู้ใช้แตะที่ BottomNavigationBar
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
 
-    // นำผู้ใช้ไปยังหน้าต่างต่างๆ ตาม index
+    // เปลี่ยนหน้าจอไปตาม index ที่ผู้ใช้เลือก
     switch (index) {
-      case 0: // หน้าหลัก
+      case 0: // หน้าแผนการฝึก
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -33,32 +35,31 @@ class _FitnessPlanScreenPageState extends State<FitnessPlanScreenPage> {
                   FitnessPlanScreenPage(userData: widget.userData)),
         );
         break;
-      case 1: // หน้าค้นหา
+      case 1: // หน้า Search
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => FitnessSearchScreen()),
         );
         break;
-      case 2: // หน้ารายงานผล
+      case 2: // หน้า รายงานผล
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => Levelpage()),
         );
         break;
-      case 3: // หน้าการตั้งค่า
+      case 3: // หน้า ตั้งค่า
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => FillProfilePage()),
         );
         break;
-      default:
-        break;
     }
   }
 
-  // ฟังก์ชันที่ใช้ในการแสดงหน้ารายละเอียดของวันต่าง ๆ เมื่อคลิกที่วัน
+  // ฟังก์ชันเปิดหน้ารายละเอียดของวัน (เมื่อแตะวันที่)
   void _viewDayDetails(BuildContext context, DateTime date) {
-    final formattedDate = DateFormat('yyyy-MM-dd').format(date);
+    final formattedDate =
+        DateFormat('yyyy-MM-dd').format(date); // แปลงรูปแบบวันที่
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -68,7 +69,7 @@ class _FitnessPlanScreenPageState extends State<FitnessPlanScreenPage> {
     );
   }
 
-  // ฟังก์ชันที่ใช้ในการไปยังหน้ารายละเอียดการฝึกกล้ามเนื้อ
+  // ฟังก์ชันเปิดหน้ารายละเอียดกล้ามเนื้อ
   void _navigateToBodyPartDetails(BuildContext context, String bodyPart) {
     Navigator.push(
       context,
@@ -78,7 +79,7 @@ class _FitnessPlanScreenPageState extends State<FitnessPlanScreenPage> {
     );
   }
 
-  // ฟังก์ชันที่ใช้ในการไปยังหน้ารายละเอียดโภชนาการของอาหาร
+  // ฟังก์ชันเปิดหน้ารายละเอียดโภชนาการอาหาร
   void _navigateToFoodDetails(BuildContext context, String foodName) {
     Navigator.push(
       context,
@@ -90,20 +91,21 @@ class _FitnessPlanScreenPageState extends State<FitnessPlanScreenPage> {
 
   @override
   Widget build(BuildContext context) {
-    final DateTime currentDay = DateTime.now();
+    final DateTime currentDay = DateTime.now(); // วันที่ปัจจุบัน
 
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'แผนการออกกำลังกาย',
+          'แผนการออกกำลังกาย', // หัวข้อหลัก
           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
         backgroundColor: Colors.blue,
         elevation: 0,
         actions: [
-          Icon(Icons.local_fire_department, color: Colors.redAccent),
+          Icon(Icons.local_fire_department,
+              color: Colors.redAccent), // ไอคอนแสดงพลัง
           SizedBox(width: 10),
-          Icon(Icons.workspace_premium, color: Colors.orange),
+          Icon(Icons.workspace_premium, color: Colors.orange), // ไอคอนแสดงระดับ
           SizedBox(width: 10),
         ],
       ),
@@ -112,7 +114,7 @@ class _FitnessPlanScreenPageState extends State<FitnessPlanScreenPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // ส่วนแสดงเป้าหมายรายสัปดาห์
+            // แสดงหัวข้อ เป้าหมายรายสัปดาห์
             Text(
               'เป้าหมายรายสัปดาห์',
               style: TextStyle(
@@ -121,35 +123,42 @@ class _FitnessPlanScreenPageState extends State<FitnessPlanScreenPage> {
                   color: Colors.blueAccent),
             ),
             SizedBox(height: 10),
+
+            // สร้างแถวของปุ่มสำหรับแต่ละวัน (7 วันถัดไป)
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: List.generate(7, (index) {
-                final day = DateTime.now().add(Duration(days: index));
+                final day =
+                    DateTime.now().add(Duration(days: index)); // วันลำดับถัดไป
                 bool isToday = currentDay.day == day.day &&
                     currentDay.month == day.month &&
-                    currentDay.year == day.year;
+                    currentDay.year ==
+                        day.year; // เช็คว่าเป็นวันปัจจุบันหรือไม่
 
-                // แต่ละวันสามารถคลิกเพื่อดูรายละเอียดการออกกำลังกาย
                 return GestureDetector(
-                  onTap: () => _viewDayDetails(context, day),
+                  onTap: () =>
+                      _viewDayDetails(context, day), // คลิกเพื่อดูรายละเอียดวัน
                   child: Container(
                     padding: EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: isToday ? Colors.blue : Colors.white,
+                      color: isToday
+                          ? Colors.blue
+                          : Colors.white, // สีต่างกันถ้าเป็นวันนี้
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(color: Colors.blue, width: 2),
                     ),
                     child: Column(
                       children: [
                         Text(
-                          DateFormat('E').format(day),
+                          DateFormat('E')
+                              .format(day), // แสดงชื่อวัน (Mon, Tue, etc.)
                           style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
                               color: Colors.black),
                         ),
                         Text(
-                          DateFormat('dd').format(day),
+                          DateFormat('dd').format(day), // แสดงวันที่
                           style: TextStyle(fontSize: 16, color: Colors.black),
                         ),
                       ],
@@ -159,7 +168,8 @@ class _FitnessPlanScreenPageState extends State<FitnessPlanScreenPage> {
               }),
             ),
             SizedBox(height: 20),
-            // ข้อความกระตุ้นในการออกกำลังกาย
+
+            // ข้อความให้กำลังใจผู้ใช้งาน
             Container(
               padding: EdgeInsets.all(12),
               decoration: BoxDecoration(
@@ -182,7 +192,58 @@ class _FitnessPlanScreenPageState extends State<FitnessPlanScreenPage> {
               ),
             ),
             SizedBox(height: 20),
-            // เลือกกล้ามเนื้อที่ต้องการฝึก
+
+            // หัวข้อเลือกกล้ามเนื้อ
+            Text(
+              'คำนวน Calories',
+              style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blueAccent),
+            ),
+            SizedBox(height: 10),
+
+            // แถบเลื่อนแนวนอนของปุ่ม calories
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => LoadingScreen()),
+                      );
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      margin: const EdgeInsets.symmetric(horizontal: 5),
+                      decoration: BoxDecoration(
+                        color: Colors.orange[100],
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.orange, width: 2),
+                      ),
+                      child: Column(
+                        children: [
+                          Image.asset('assets/images/lock.png',
+                              width: 150, height: 100),
+                          const SizedBox(height: 5),
+                          const Text(
+                            'Calories',
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 20),
             Text(
               'เลือกกล้ามเนื้อที่ต้องการฝึก',
               style: TextStyle(
@@ -191,6 +252,8 @@ class _FitnessPlanScreenPageState extends State<FitnessPlanScreenPage> {
                   color: Colors.blueAccent),
             ),
             SizedBox(height: 10),
+
+            // แถบเลื่อนแนวนอนของปุ่มกล้ามเนื้อ
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
@@ -201,15 +264,15 @@ class _FitnessPlanScreenPageState extends State<FitnessPlanScreenPage> {
                       context, 'แขน', 'assets/images/arms.png'),
                   _buildBodyPartButton(
                       context, 'หน้าอก', 'assets/images/chest.png'),
-                  _buildBodyPartButton(
-                      context, 'ขา', 'assets/images/legs.png'),
-                  _buildBodyPartButton(
-                      context, 'ไหล่และหลัง','assets/images/shouldersandback.png'),
+                  _buildBodyPartButton(context, 'ขา', 'assets/images/legs.png'),
+                  _buildBodyPartButton(context, 'ไหล่และหลัง',
+                      'assets/images/shouldersandback.png'),
                 ],
               ),
             ),
             SizedBox(height: 20),
-            // เลือกอาหารที่ต้องการทราบโภชนาการ
+
+            // หัวข้อเลือกอาหาร
             Text(
               'เลือกอาหารที่ต้องการทราบโภชนาการ',
               style: TextStyle(
@@ -218,6 +281,8 @@ class _FitnessPlanScreenPageState extends State<FitnessPlanScreenPage> {
                   color: Colors.blueAccent),
             ),
             SizedBox(height: 10),
+
+            // แถบเลื่อนแนวนอนของปุ่มอาหาร
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
@@ -235,13 +300,14 @@ class _FitnessPlanScreenPageState extends State<FitnessPlanScreenPage> {
           ],
         ),
       ),
-      // BottomNavigationBar สำหรับการนำทาง
+
+      // เมนูด้านล่าง (BottomNavigationBar)
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         selectedItemColor: Colors.blue,
         unselectedItemColor: Colors.grey,
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
+        currentIndex: _selectedIndex, // ตำแหน่งเมนูที่ถูกเลือก
+        onTap: _onItemTapped, // ฟังก์ชันที่เรียกเมื่อแตะ
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.fitness_center),
@@ -264,11 +330,12 @@ class _FitnessPlanScreenPageState extends State<FitnessPlanScreenPage> {
     );
   }
 
-  // สร้างปุ่มสำหรับเลือกกล้ามเนื้อที่ต้องการฝึก
+  // ปุ่มกล้ามเนื้อแต่ละส่วน
   Widget _buildBodyPartButton(
       BuildContext context, String bodyPart, String imagePath) {
     return GestureDetector(
-      onTap: () => _navigateToBodyPartDetails(context, bodyPart),
+      onTap: () => _navigateToBodyPartDetails(
+          context, bodyPart), // คลิกไปหน้ารายละเอียดกล้ามเนื้อ
       child: Container(
         padding: EdgeInsets.all(10),
         margin: EdgeInsets.symmetric(horizontal: 5),
@@ -279,10 +346,11 @@ class _FitnessPlanScreenPageState extends State<FitnessPlanScreenPage> {
         ),
         child: Column(
           children: [
-            Image.asset(imagePath, width: 150, height: 100),
+            Image.asset(imagePath,
+                width: 150, height: 100), // แสดงรูปกล้ามเนื้อ
             SizedBox(height: 5),
             Text(
-              bodyPart,
+              bodyPart, // ชื่อกล้ามเนื้อ
               style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
@@ -294,11 +362,12 @@ class _FitnessPlanScreenPageState extends State<FitnessPlanScreenPage> {
     );
   }
 
-  // สร้างปุ่มสำหรับเลือกอาหารที่ต้องการทราบโภชนาการ
+  // ปุ่มอาหารแต่ละชนิด
   Widget _buildFoodButton(
       BuildContext context, String foodName, String imagePath) {
     return GestureDetector(
-      onTap: () => _navigateToFoodDetails(context, foodName),
+      onTap: () => _navigateToFoodDetails(
+          context, foodName), // คลิกไปหน้ารายละเอียดอาหาร
       child: Container(
         padding: EdgeInsets.all(10),
         margin: EdgeInsets.symmetric(horizontal: 5),
@@ -309,10 +378,10 @@ class _FitnessPlanScreenPageState extends State<FitnessPlanScreenPage> {
         ),
         child: Column(
           children: [
-            Image.asset(imagePath, width: 100, height: 100),
+            Image.asset(imagePath, width: 100, height: 100), // แสดงรูปอาหาร
             SizedBox(height: 5),
             Text(
-              foodName,
+              foodName, // ชื่ออาหาร
               style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,

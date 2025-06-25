@@ -175,7 +175,7 @@ class _YearPageState extends State<YearPage> {
                           MaterialPageRoute(
                             builder: (context) => GenderPage(
                               userId: widget.userId,
-                              year: selectedYear.toString(), // ✅ แก้ตรงนี้
+                              year: selectedYear.toString(), // แก้ตรงนี้
                             ),
                           ),
                         );
